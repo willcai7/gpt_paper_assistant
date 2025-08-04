@@ -19,10 +19,10 @@ jobs:
     outputs:
       file-exists: ${{steps.file-check.outputs.file_exists}}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v8
       with:
         workflow: cron_runs.yaml
         workflow_conclusion: success
@@ -31,19 +31,19 @@ jobs:
       run: ls -R
     - name: Check for output.md
       id: check_files
-      uses: andstor/file-existence-action@v2
+      uses: andstor/file-existence-action@v3
       with:
         files: output.md
     - name: Convert output.md to pages
-      uses: wranders/markdown-to-pages-action@v0.1
+      uses: wranders/markdown-to-pages-action@v1
       if: steps.check_files.outputs.files_exists == 'true'
       with:
        token: ${{ secrets.GITHUB_TOKEN }}
-       file: output.md
+       files: output.md
     - uses: actions/upload-pages-artifact@v3
       if: steps.check_files.outputs.files_exists == 'true'
       with:
         path: dist
-    - uses: actions/deploy-pages@v1
+    - uses: actions/deploy-pages@v4
       if: steps.check_files.outputs.files_exists == 'true'
       id: deployment
